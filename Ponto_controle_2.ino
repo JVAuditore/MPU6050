@@ -19,12 +19,16 @@ Objetivos:
 /* CONSTANTES */
 const int medidas = 100; //quantidade de coletas para calibracao
 const int qt = 36; //quantidade de coletas para calcular erro
+const int lin = 15; //quantidade de linhas printadas na serial
+const int line = 255-lin;
+
+
 
 
 
 
 /* Variaveis*/
-bool flag = false;
+byte qtline = 0;
 float AcelXoffset, AcelYoffset, AcelZoffset, GanhoX, GanhoY, GanhoZ;
 float Xp= 108.04;
 float Xn = -92.43;
@@ -53,8 +57,7 @@ void setup() {
   Serial.println("=====================================");
   Serial.println("iniciando Calibração...");
   calibrar(); 
-  Serial.println("Calibração efetuada com sucesso!");
-  flag = 1;
+  Serial.println("Calibracao efetuada com sucesso!");
 }
 
 void loop() {
@@ -68,9 +71,9 @@ void loop() {
 void acelerometro(){// Printa os dados lidos na serial
   mpu.Execute(); // atualiza e trata todos os dados do MPU6050 para futuramente poderem serem chamados os valores.
   
-  if (((millis()%5000)==0) or (flag == 1)){
+  if (qtline == 0){ // printa a qt de linhas definida no escopo
     Serial.println("\n|     Raw X     |     Raw Y     |     Raw Z     |       X       |       Y       |       Z       |     ang YZ    |     ang XZ    |     ang XY    |");
-    flag = 0;
+    qtline = line;    
   }
 
   if ((millis()%250)==0){
@@ -79,6 +82,7 @@ void acelerometro(){// Printa os dados lidos na serial
     PrintAcelBefore();
     PrintAcelAfter();
     PrintAng();
+    qtline ++;
   }
 }
 
